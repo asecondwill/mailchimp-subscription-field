@@ -7,7 +7,7 @@ Installation
 ------------
 The easiest way is to use [composer](https://getcomposer.org/):
 
-    composer require lerni/editablemailchimpsubscriptionfield
+    composer require will/editablemailchimpsubscriptionfield
 
 If you just clone/download this repository make sure you have the required packages also installed.
 

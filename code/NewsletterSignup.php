@@ -7,42 +7,40 @@ class NewsletterSignup extends EditableFormField
     public static $plural_name = 'Newsletter Signup Fields';
     private static $api_key = "";
     private static $db = array(
-        'ListId' => 'Varchar(255)',
-        'EmailField' => 'Varchar(255)',
-        'FirstNameField' => 'Varchar(255)',
-        'LastNameField' => 'Varchar(255)',
-        'TickedByDefault' => 'Boolean',
-        'HideOptIn' => 'Boolean',
-        'ShowGroupsInterests' => 'Boolean',
-        'DefaultInterest' => 'Varchar(255)'
+      'ListId' => 'Varchar(255)',
+      'EmailField' => 'Varchar(255)',
+      'FirstNameField' => 'Varchar(255)',
+      'LastNameField' => 'Varchar(255)',
+      'TickedByDefault' => 'Boolean',
+      'HideOptIn' => 'Boolean',
+      'ShowGroupsInterests' => 'Boolean',
+      'DefaultInterest' => 'Varchar(255)'
     );
     private static $has_many = array(
-        "MailChimpMergeVars" => "MailChimpMergeVar"
+      "MailChimpMergeVars" => "MailChimpMergeVar"
     );
     public function Icon()
     {
-        return MOD_DOAP_DIR . '/images/editablemailchimpsubscriptionfield.png';
+      return MOD_DOAP_DIR . '/images/editablemailchimpsubscriptionfield.png';
     }
     public static function set_api_key($key)
     {
-        self::$api_key = $key;
+      self::$api_key = $key;
     }
-
     public static function get_api_key()
     {
-        return self::$api_key;
+      return self::$api_key;
     }
 
     public function getCMSFields()
     {
-        $fields = parent::getCMSFields();
-        $fields->removeByName('Default');
-        $fields->removeByName('Validation');
-
-        $fieldsStatus = true;
-        if ($this->Lists()->Count() > 0) {
-            $fieldsStatus = false;
-        }
+      $fields = parent::getCMSFields();
+      $fields->removeByName('Default');
+      $fields->removeByName('Validation');
+      $fieldsStatus = true;
+      if ($this->Lists()->Count() > 0) {
+          $fieldsStatus = false;
+      }
       $fields->addFieldsToTab("Root.Main", [
         LiteralField::create("MailChimpStart", "<h4>Mailchimp Configuration</h4>")->setAttribute("disabled", $fieldsStatus),
         DropdownField::create("ListId", 'Subscribers List', $this->Lists()->map("id", "name"))
@@ -57,7 +55,6 @@ class NewsletterSignup extends EditableFormField
         GroupedDropdownField::create("DefaultInterest", 'Add to Interest', $this->InterestsOptions())
                  ->setEmptyString("Choose an Interest")
                  ->setAttribute("disabled", $fieldsStatus),
-
       ]);
       $config =  GridFieldConfig_RelationEditor::create();
       $dataColumns = $config->getComponentByType('GridFieldDataColumns');
@@ -68,7 +65,6 @@ class NewsletterSignup extends EditableFormField
       $fields->addFieldToTab('Root.MergeVars',
         $grid =   new GridField('MailChimpMergeVars', 'MailChimpMergeVar', $this->MailChimpMergeVars(),  $config)
       );
-
       return $fields;
     }
 
@@ -111,21 +107,6 @@ class NewsletterSignup extends EditableFormField
       return $result;
     }
 
-
-    // public function MergeVars(){
-    //   $MailChimp = new MailChimp($this->get_api_key());
-    //   $mergevars = $MailChimp->get("lists/{$this->ListId}/merge-fields");
-    //   if (is_array($mergevars['merge_fields'])) {
-    //       $map_mergevars = array();
-    //       $i = 0;
-    //       foreach ($mergevars['merge_fields'] as $mv) {
-    //           $map_mergevars[$i]['name'] = $mv['name'];
-    //           $map_mergevars[$i]['tag'] = $mv['tag'];
-    //           $i++;
-    //       }
-    //   }
-    //   return $map_mergevars;
-    // }
     public function Interests(){
         $MailChimp = new MailChimp($this->get_api_key());
         $categories = $MailChimp->get("lists/{$this->ListId}/interest-categories");
@@ -140,26 +121,10 @@ class NewsletterSignup extends EditableFormField
         }
         return $mCategories;
     }
-    //
-    // public function Groups(){
-    //     $MailChimp = new MailChimp($this->get_api_key());
-    //     $categories = $MailChimp->get("lists/{$this->ListId}/interest-categories");
-    //     $mCategories= [];
-    //     foreach($categories['categories'] as $group){
-    //       $interests = $MailChimp->get("lists/{$this->ListId}/interest-categories/{$interests["id"]}");
-    //       $mInterests = [];
-    //       foreach ($interests as $interest) {
-    //         $mInterests[] = new ArrayData(["id" => $interest["id"], "name" => $interest["name"]]);
-    //       }
-    //       $mCategories[] = new ArrayData(["id" => $interests["id"], "title" => $interests["title"], "interests" => $mInterests]);
-    //     }
-    //     return new ArrayList($mCategories);
-    // }
-
-
 
     public function getFormField()
     {
+      Requirements::javascript(MOD_DOAP_DIR . "/javascript/newsletter.js");
       if($this->ListId && $this->FirstNameField && $this->EmailField && $this->LastNameField){
         $f = new FieldGroup(
           $this->optin_field(),
@@ -167,38 +132,28 @@ class NewsletterSignup extends EditableFormField
         );
         return $f;
       }
-
-      // //$map_groups = $this->Groups();
-      // if (count($map_groups) > 1) {
-      //   Requirements::javascript(MOD_DOAP_DIR . "/javascript/newsletter.js");
-      //   $f = new FieldGroup(
-      //       $a = new CheckboxField($this->Name, $this->Title, $this->getSetting('Default')),
-      //       new CheckboxSetField('Themes', 'Choose Groups', $map_groups)
-      //   );
-      //   $a->addExtraClass('newsletter-toggle');
-      //   $f->addExtraClass('newsletter-group');
-      //   return $f;
-      // }else{
-      //   return null;
-      // }
     }
+
     public function groups_field(){
       if($this->ShowGroupsInterests){
         $fields = new FieldGroup();
         foreach($this->Interests() as  $interests){
-            debug::show($interests["interests"]);
-            $fields->push(CheckboxSetField::create("Interests{$interests["id"]}", "Choose {$interests["title"]}", $interests["interests"]));
+          $fields->push($field = CheckboxSetField::create("Interests{$interests["id"]}", "Choose {$interests["title"]}", $interests["interests"]));
         }
+        $fields->addExtraClass('newsletter-group');
         return $fields;
       }else{
         return null;
       }
     }
+
     public function optin_field(){
       if ($this->HideOptIn){
         return new HiddenField($this->Name, $this->Title, true);
       }else{
-        return new CheckboxField($this->Name, $this->Title, $this->TickedByDefault);
+        $field = new CheckboxField($this->Name, $this->Title, $this->TickedByDefault);
+        $field->addExtraClass('newsletter-toggle');
+        return $field;
       }
     }
 
@@ -216,24 +171,50 @@ class NewsletterSignup extends EditableFormField
         return $values;
     }
 
+    public function get_interests_from_data($data){
+      $result = [];
+      foreach($data as $iterests){
+        if (is_array($iterests)){
+          $iterests = array_values($iterests);
+          foreach ($iterests as $item){
+            $result[$item]  = true;
+          }
+        }
+      }
+      return $result;
+    }
+
+    public function merge_fields($data){
+      $result = [];
+      $result['FNAME'] = $data[$this->FirstNameField];
+      $result['LNAME'] = $data[$this->LastNameField];
+      foreach ($this->MailChimpMergeVars() as $var) {
+        $result[$var->MergeField] = $data[$var->FormField];
+      }
+      return $result;
+    }
+
     public function getValueFromData($data)
     {
-        $data = Session::get("FormInfo.Form_Form.data");
-        $map = $this->getNewsLetterFieldNames();
-        $value = (isset($data[$this->Name])) ? $data[$this->Name] : false;
-
-        if ($value) {
-            $MailChimp = new MailChimp($this->get_api_key());
-            $result = $MailChimp->call('lists/subscribe', array(
-                'id' => $this->ListId,
-                'email' => array('email' => $data[$map['EMAIL']['name']]),
-                'merge_vars' => array('FNAME' => $data[$map['FNAME']['name']], 'LNAME' => $data[$map['LNAME']['name']]),
-                'double_optin' => false,
-                'update_existing' => true,
-                'replace_interests' => false,
-                'send_welcome' => true,
-            ));
-            return ($value) ? $value : _t('EditableFormField.NO', 'No');
+      if($data[$this->Name]){
+        $mc_data = [
+          'email_address'   => $data[$this->EmailField],
+				  'status'          => 'subscribed',
+          'interests'       => $this->get_interests_from_data($data),
+          'double_optin'    => false,
+          'send_welcome'    => true,
+          'update_existing' => true,
+          'merge_fields'    => $this->merge_fields($data)
+        ];
+        $MailChimp = new MailChimp($this->get_api_key());
+        $result = $MailChimp->post("lists/{$this->ListId}/members", $mc_data);
+        SS_Log::log($result, SS_Log::WARN);
+        if(isset($result['errors']) && is_array($result['errors'])){
+          SS_Log::log("oops, mc error", SS_Log::WARN);
+          return false;
+        }else{
+          return true;
         }
+      }
     }
 }
