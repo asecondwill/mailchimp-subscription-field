@@ -13,6 +13,9 @@ class NewsletterSignup extends EditableFormField
       'LastNameField' => 'Varchar(255)',
       'TickedByDefault' => 'Boolean',
       'HideOptIn' => 'Boolean',
+      'DoubleOptin' => 'Boolean',
+      'SendWelcome' => 'Boolean',
+      'HideOptIn' => 'Boolean',
       'ShowGroupsInterests' => 'Boolean',
       'DefaultInterest' => 'Varchar(255)'
     );
@@ -48,6 +51,8 @@ class NewsletterSignup extends EditableFormField
               ->setAttribute("disabled", $fieldsStatus),
         CheckboxField::create("TickedByDefault")->setAttribute("disabled", $fieldsStatus),
         CheckboxField::create("HideOptIn")->setAttribute("disabled", $fieldsStatus),
+        CheckboxField::create("DoubleOptin")->setAttribute("disabled", $fieldsStatus),
+        CheckboxField::create("SendWelcome")->setAttribute("disabled", $fieldsStatus),
         CheckboxField::create("ShowGroupsInterests")->setAttribute("disabled", $fieldsStatus),
         DropdownField::create("EmailField", 'Email Field', $this->CurrentFormFields())->setAttribute("disabled", $fieldsStatus),
         DropdownField::create("FirstNameField", 'First Name Field', $this->CurrentFormFields())->setAttribute("disabled", $fieldsStatus),
@@ -200,17 +205,19 @@ class NewsletterSignup extends EditableFormField
         $mc_data = [
           'email_address'   => $data[$this->EmailField],
 				  'status'          => 'subscribed',
-          'interests'       => $this->get_interests_from_data($data),
-          'double_optin'    => false,
-          'send_welcome'    => true,
+          'double_optin'    => $this->DoubleOptin,
+          'send_welcome'    => $this->SendWelcome,
           'update_existing' => true,
           'merge_fields'    => $this->merge_fields($data)
         ];
+        if (!empty($this->get_interests_from_data($data))){
+          $mc_data['interests'] = $this->get_interests_from_data($data);
+        }
         $MailChimp = new MailChimp($this->get_api_key());
         $result = $MailChimp->post("lists/{$this->ListId}/members", $mc_data);
-        SS_Log::log($result, SS_Log::WARN);
         if(isset($result['errors']) && is_array($result['errors'])){
-          SS_Log::log("oops, mc error", SS_Log::WARN);
+          SS_Log::log("oops, mailchimp  error {$result['errors'][0]['message']}" , SS_Log::WARN);
+          SS_Log::log(var_export($mc_data, true), SS_Log::WARN);
           return false;
         }else{
           return true;
