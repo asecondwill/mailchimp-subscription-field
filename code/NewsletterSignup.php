@@ -48,28 +48,34 @@ class NewsletterSignup extends EditableFormField
         LiteralField::create("MailChimpStart", "<h4>Mailchimp Configuration</h4>")->setAttribute("disabled", $fieldsStatus),
         DropdownField::create("ListId", 'Subscribers List', $this->Lists()->map("id", "name"))
               ->setEmptyString("Choose a List")
-              ->setAttribute("disabled", $fieldsStatus),
-        CheckboxField::create("TickedByDefault")->setAttribute("disabled", $fieldsStatus),
-        CheckboxField::create("HideOptIn")->setAttribute("disabled", $fieldsStatus),
-        CheckboxField::create("DoubleOptin")->setAttribute("disabled", $fieldsStatus),
-        CheckboxField::create("SendWelcome")->setAttribute("disabled", $fieldsStatus),
-        CheckboxField::create("ShowGroupsInterests")->setAttribute("disabled", $fieldsStatus),
-        DropdownField::create("EmailField", 'Email Field', $this->CurrentFormFields())->setAttribute("disabled", $fieldsStatus),
-        DropdownField::create("FirstNameField", 'First Name Field', $this->CurrentFormFields())->setAttribute("disabled", $fieldsStatus),
-        DropdownField::create("LastNameField", 'Last Name Field', $this->CurrentFormFields())->setAttribute("disabled", $fieldsStatus),
-        GroupedDropdownField::create("DefaultInterest", 'Add to Interest', $this->InterestsOptions())
-                 ->setEmptyString("Choose an Interest")
-                 ->setAttribute("disabled", $fieldsStatus),
-      ]);
-      $config =  GridFieldConfig_RelationEditor::create();
-      $dataColumns = $config->getComponentByType('GridFieldDataColumns');
-      $dataColumns->setDisplayFields(array(
-         'FormField' => 'FormField',
-         'MergeField'=> 'MergeField'
-      ));
-      $fields->addFieldToTab('Root.MergeVars',
-        $grid =   new GridField('MailChimpMergeVars', 'MailChimpMergeVar', $this->MailChimpMergeVars(),  $config)
+              ->setAttribute("disabled", $fieldsStatus)]
       );
+      if (!empty($this->ListId)){
+        $fields->addFieldsToTab("Root.Main", [
+          CheckboxField::create("TickedByDefault")->setAttribute("disabled", $fieldsStatus),
+          CheckboxField::create("HideOptIn")->setAttribute("disabled", $fieldsStatus),
+          CheckboxField::create("DoubleOptin")->setAttribute("disabled", $fieldsStatus),
+          CheckboxField::create("SendWelcome")->setAttribute("disabled", $fieldsStatus),
+          CheckboxField::create("ShowGroupsInterests")->setAttribute("disabled", $fieldsStatus),
+          DropdownField::create("EmailField", 'Email Field', $this->CurrentFormFields())->setAttribute("disabled", $fieldsStatus),
+          DropdownField::create("FirstNameField", 'First Name Field', $this->CurrentFormFields())->setAttribute("disabled", $fieldsStatus),
+          DropdownField::create("LastNameField", 'Last Name Field', $this->CurrentFormFields())->setAttribute("disabled", $fieldsStatus),
+          GroupedDropdownField::create("DefaultInterest", 'Add to Interest', $this->InterestsOptions())
+                   ->setEmptyString("Choose an Interest")
+                   ->setAttribute("disabled", $fieldsStatus),
+        ]);
+        $config =  GridFieldConfig_RelationEditor::create();
+        $dataColumns = $config->getComponentByType('GridFieldDataColumns');
+        $dataColumns->setDisplayFields(array(
+           'FormField' => 'FormField',
+           'MergeField'=> 'MergeField'
+        ));
+        $fields->addFieldToTab('Root.MergeVars',
+          $grid =   new GridField('MailChimpMergeVars', 'MailChimpMergeVar', $this->MailChimpMergeVars(),  $config)
+        );
+      }
+
+
       return $fields;
     }
 
@@ -88,28 +94,32 @@ class NewsletterSignup extends EditableFormField
     }
 
     public function InterestsOptions(){
-      $MailChimp = new MailChimp($this->get_api_key());
-      $categories = $MailChimp->get("lists/{$this->ListId}/interest-categories");
-      $mCategories= [];
-      foreach($categories['categories'] as $category){
-        $mInterests = [];
-        $interests = $MailChimp->get("lists/{$this->ListId}/interest-categories/{$category["id"]}/interests");
-        foreach ($interests["interests"] as $interest) {
-          $mInterests[$interest["id"]] =   $interest["name"];
+      if(!empty($this->ListId)){
+        $MailChimp = new MailChimp($this->get_api_key());
+        $categories = $MailChimp->get("lists/{$this->ListId}/interest-categories");
+        $mCategories= [];
+        foreach($categories['categories'] as $category){
+          $mInterests = [];
+          $interests = $MailChimp->get("lists/{$this->ListId}/interest-categories/{$category["id"]}/interests");
+          foreach ($interests["interests"] as $interest) {
+            $mInterests[$interest["id"]] =   $interest["name"];
+          }
+          $mCategories[$category["title"]] =  $mInterests;
         }
-        $mCategories[$category["title"]] =  $mInterests;
+        return $mCategories;
       }
-      return $mCategories;
     }
 
     public function MergeFields(){
-      $MailChimp = new MailChimp($this->get_api_key());
-      $response = $MailChimp->get("lists/{$this->ListId}/merge-fields");
-      $result = [];
-      foreach ($response["merge_fields"] as $merge_field) {
-        $result[$merge_field["tag"]] =  $merge_field["name"];
+      if(!empty($this->ListId)){
+        $MailChimp = new MailChimp($this->get_api_key());
+        $response = $MailChimp->get("lists/{$this->ListId}/merge-fields");
+        $result = [];
+        foreach ($response["merge_fields"] as $merge_field) {
+          $result[$merge_field["tag"]] =  $merge_field["name"];
+        }
+        return $result;
       }
-      return $result;
     }
 
     public function Interests(){
@@ -156,7 +166,7 @@ class NewsletterSignup extends EditableFormField
       if ($this->HideOptIn){
         return new HiddenField($this->Name, $this->Title, true);
       }else{
-        $field = new CheckboxField($this->Name, $this->Title, $this->TickedByDefault);
+        $field = new CheckboxField($this->Name, $this->EscapedTitle, $this->TickedByDefault);
         $field->addExtraClass('newsletter-toggle');
         return $field;
       }
