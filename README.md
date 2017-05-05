@@ -31,6 +31,8 @@ Click edit for that field.  Choose a list from the dropdown. Save to set that.
 
 Now fill in the other fields as you need them.
 
+![mailchimp settings](https://github.com/asecondwill/mailhimp-subscription-field/blob/master/mailchimp-settings.png)
+
 Status
 -------------
 The module is actively being developed.  Suggestions, pull requests and issues are welcome.
