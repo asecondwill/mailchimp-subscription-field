@@ -24,6 +24,11 @@ Add your MailChimp API-Key per _config
 
 Run `dev/build` afterwards.
 
+## Adding a Field to a form
+Add a Newsletter signup field to your user form. Save your form to save that.
+Click edit for that field.  Choose a list from the dropdown. Save to set that.
+Now fill in the other fields as you need them.
+
 Status
 -------------
 The module is actively being developed.  Suggestions, pull requests and issues are welcome.
