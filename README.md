@@ -26,7 +26,7 @@ Run `dev/build` afterwards.
 
 Status
 -------------
-The module just basically works :) hope pushing it here keeps me going.
+The module is actively being developed.  Suggestions, pull requests and issues are welcome.
 
 How to use
 -------------
