@@ -25,10 +25,9 @@
     "silverstripe/framework": "~3.5"
   },
   "extra": {
-    "installer-name": "module-name",
+    "installer-name": "mailchimpSubscriptionField",
     "screenshots": [
-      "relative/path/screenshot1.png",
-      "http://myhost.com/screenshot2.png"
+      "https://github.com/asecondwill/MailChimpSubscriptionField/blob/master/mailchimp-settings.png"
     ]
   }
 }
