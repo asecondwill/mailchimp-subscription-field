@@ -1,13 +1,4 @@
 {
-    "name": "asecondwill/mailchimpSubscriptionField",
-    "description": "A field for Silverstripe Userforms to send submissions to the monkey.",
-    "require": {
-      "drewm/mailchimp-api": "master"
-    }
-}
-
-
-{
   "name": "asecondwill/mailchimpSubscriptionField",
   "description": "A field for Silverstripe Userforms to send submissions to Mailchimp Lists.",
   "type": "silverstripe-module",
@@ -22,7 +13,8 @@
   },
   "require": {
     "silverstripe/cms": "~3.5",
-    "silverstripe/framework": "~3.5"
+    "silverstripe/framework": "~3.5",
+    "drewm/mailchimp-api": "master"
   },
   "extra": {
     "installer-name": "mailchimpSubscriptionField",
