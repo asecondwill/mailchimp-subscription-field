@@ -3,6 +3,8 @@ EditableMailchimpSubscriptionField
 
 A Field for UserForms (EditableFormField) that'll let you add Subscribers to a MailChimp list with groups.
 
+Initially a fork/ re-write of https://github.com/lerni/EditableMailchimpSubscriptionField
+
 Installation
 ------------
 The easiest way is to use [composer](https://getcomposer.org/):
