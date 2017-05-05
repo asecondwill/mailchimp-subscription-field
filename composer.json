@@ -1,15 +1,15 @@
 {
-  "name": "asecondwill/mailchimpSubscriptionField",
+  "name": "asecondwill/mailhimp-subscription-field",
   "description": "A field for Silverstripe Userforms to send submissions to Mailchimp Lists.",
   "type": "silverstripe-module",
-  "homepage": "http://github.com/asecondwill/mailchimpSubscriptionField",
+  "homepage": "http://github.com/asecondwill/mailhimp-subscription-field",
   "keywords": ["silverstripe", "mailchimp", "marketing"],
   "license": "BSD-3-Clause",
   "authors": [
     {"name": "Will Barker","email": "will@kindleman.com.au"}
   ],
   "support": {
-    "issues": "http://github.com/asecondwill/mailchimpSubscriptionField/issues"
+    "issues": "http://github.com/asecondwill/mailhimp-subscription-field/issues"
   },
   "require": {
     "silverstripe/cms": "~3.5",
@@ -17,9 +17,9 @@
     "drewm/mailchimp-api": "master"
   },
   "extra": {
-    "installer-name": "mailchimpSubscriptionField",
+    "installer-name": "mailhimp-subscription-field",
     "screenshots": [
-      "https://github.com/asecondwill/MailChimpSubscriptionField/blob/master/mailchimp-settings.png"
+      "https://github.com/asecondwill/mailhimp-subscription-field/blob/master/mailchimp-settings.png"
     ]
   }
 }
