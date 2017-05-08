@@ -9,7 +9,7 @@ Installation
 ------------
 The easiest way is to use [composer](https://getcomposer.org/):
 
-    composer require asecondwill/mailhimp-subscription-field
+    composer require asecondwill/mailchimp-subscription-field
 
 If you just clone/download this repository make sure you have the required packages also installed.
 
@@ -31,7 +31,7 @@ Click edit for that field.  Choose a list from the dropdown. Save to set that.
 
 Now fill in the other fields as you need them.
 
-![mailchimp settings](https://github.com/asecondwill/mailhimp-subscription-field/blob/master/mailchimp-settings.png)
+![mailchimp settings](https://github.com/asecondwill/mailchimp-subscription-field/blob/master/mailchimp-settings.png)
 
 Status
 -------------
