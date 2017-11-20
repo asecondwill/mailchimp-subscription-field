@@ -153,7 +153,7 @@ class NewsletterSignup extends EditableFormField
       if($this->ShowGroupsInterests){
         $fields = new FieldGroup();
         foreach($this->Interests() as  $interests){
-          $fields->push($field = CheckboxSetField::create("Interests{$interests["id"]}", "Choose {$interests["title"]}", $interests["interests"]));
+          $fields->push($field = CheckboxSetField::create("Interests{$interests["id"]}", "{$interests["title"]}", $interests["interests"]));
         }
         $fields->addExtraClass('newsletter-group');
         return $fields;
