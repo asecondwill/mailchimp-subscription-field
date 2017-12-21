@@ -12,8 +12,8 @@
     "issues": "http://github.com/asecondwill/mailchimp-subscription-field/issues"
   },
   "require": {
-    "silverstripe/cms": "~3.5",
-    "silverstripe/framework": "~3.5",
+    "silverstripe/cms": "~4",
+    "silverstripe/framework": "~4",
     "drewm/mailchimp-api": "master"
   },
   "extra": {
